@@ -15,70 +15,59 @@ using namespace std;
  */
 
 ListNode::ListNode(int val) {
-    //cout << "*Inside Node Constructor*\n";
+    cout << "*Inside Node Constructor*\n";
     value = val;    // Data
     /* Any new Node will be the "last" in the list */
-    setNext(NULL);
+    //setNext(NULL);
 }
 
-ListNode::~ListNode() { cout << "ListNode has died\n"; }
+ListNode::~ListNode() {
+    cout << getValue() << " from ListNode has died";
+}
 
 int ListNode::getValue() {
-    //cout << "-Inside Node getValue()-\n";
+    cout << "\n-Inside Node getValue()-\n";
     return value;
 }
 
 void ListNode::setNext(ListNode *n) {
-    //cout << "-Inside Node::setNext()-\n";
+    cout << "-Inside Node::setNext()-\n";
     nextPtr = n;
 }
 
 ListNode *ListNode::getNext() {
-    //cout << "-Inside ListNode::getNext()-\n";
+    cout << "-Inside ListNode::getNext()-\n";
     return nextPtr;
 }
 
 List::List() {
-    //cout << "-Inside List Constructor-\n";
+    cout << "-Inside List Constructor-\n";
     /* When a new list is created, there needs to
      * be a "Dummy" or "Blank" Node available. The
      * head and tail will be NULL. */
-    //head = new ListNode(NULL);
+    head = new ListNode(NULL); //value = NULL,
     //ListNode *head = value;
-    //ListNode *head = NULL;
+    *head = NULL;
 }
 
 List::~List() {
-    cout << "List has died\n";
+    cout << head->getValue();
+    cout << " from List has died\n";
     delete head;
 }
 
 void List::addNode(int value) {
-    //cout << "addNode here: " << value;
-    /* if a Head doesn't have a value, then it's the
-     * Dummy Node. Delete it, and then create the
-     * first node of the list with a value. */
-    if (head->getValue() == NULL) {
-        //cout << " is the First node\n";
-        delete head;
-        head = new ListNode(value);
-    }
-    /* if Head does have a value, set the tail of
-     * the current node to point at the new value
-     * point at the new head */
-    else {
-        //cout << " is added to the end\n";
-        head->setNext(reinterpret_cast<ListNode *>(&value));
-    }
-    //printList();
+    cout << " addNode here: " << value << endl;
+    ListNode* newNode = new ListNode(value);
+    newNode->setNext(head);
 }
 
 int List::getLength() {
-    int currentLength = 0;
+/*    int currentLength = 0;
     while (head->getNext() != NULL) {
         currentLength++;
-    }
-    return currentLength;
+    }*/
+    return 0;
 }
 
 ListNode *List::search(int value) {
