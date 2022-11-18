@@ -14,60 +14,91 @@ using namespace std;
  * of a list will have a pointer to NULL.
  */
 
-ListNode::ListNode(int val) {
-    cout << "*Inside Node Constructor*\n";
-    value = val;    // Data
-    /* Any new Node will be the "last" in the list */
-    //setNext(NULL);
+ListNode::ListNode(int val) : nextPtr(nullptr){
+    //cout << "\t*Inside Node Constructor*\n";
+    value = val;
+    if (value == 0) {  // For construction of List
+        setNext(nullptr);
+    }
 }
 
 ListNode::~ListNode() {
-    cout << getValue() << " from ListNode has died";
+    cout << getValue() << "\t from ListNode has died";
 }
 
-int ListNode::getValue() {
-    cout << "\n-Inside Node getValue()-\n";
+int ListNode::getValue() const {
+    //cout << "\n*Inside Node getValue()*\n";
     return value;
 }
 
 void ListNode::setNext(ListNode *n) {
-    cout << "-Inside Node::setNext()-\n";
+    //cout << "*Inside Node::setNext()*\n";
     nextPtr = n;
 }
 
 ListNode *ListNode::getNext() {
-    cout << "-Inside ListNode::getNext()-\n";
+    //cout << "*Inside ListNode::getNext()*\n";
     return nextPtr;
 }
 
+void ListNode::print() const {
+    //cout << "*Inside Node print()* ";
+    if (this->value != 0)
+        cout << value << endl;
+}
+
 List::List() {
-    cout << "-Inside List Constructor-\n";
+    //cout << "-Inside List Constructor-\n";
     /* When a new list is created, there needs to
      * be a "Dummy" or "Blank" Node available. The
-     * head and tail will be NULL. */
-    head = new ListNode(NULL); //value = NULL,
-    //ListNode *head = value;
-    *head = NULL;
+     * head and tail will be 0 and NULL. */
+    head = new ListNode(0);
 }
 
 List::~List() {
-    cout << head->getValue();
-    cout << " from List has died\n";
+    cout << head->getValue() << " from List has died\n";
     delete head;
+    //getLength();
 }
 
 void List::addNode(int value) {
-    cout << " addNode here: " << value << endl;
-    ListNode* newNode = new ListNode(value);
+    //cout << "-Inside List::addNode()- ";
+    ListNode *oldNode = this->head;
+    //cout << "Old Node value: " << oldNode->getValue() << endl;
+    //cout << "Old Node nxtPtr " << oldNode->getNext() << endl;
+
+    auto* newNode = new ListNode(value);
     newNode->setNext(head);
+    this->head = newNode;
+    //cout << "New Node value: " << newNode->getValue() << endl;
+    //cout << "New Node nxtPtr " << newNode->getNext() << endl << endl;
 }
 
 int List::getLength() {
-/*    int currentLength = 0;
-    while (head->getNext() != NULL) {
-        currentLength++;
-    }*/
-    return 0;
+    //cout << "-Inside List::getLength()-\n";
+    int length = 0;
+    string reverseList = "";
+    ListNode* currentNode = head;
+    //cout << "Current Node = " << currentNode << endl;
+    while (currentNode->getNext() != 0) {
+        length++;
+        //cout << "length at current node: " << length << endl;
+        //cout << "current node getValue() " << currentNode->getValue() << endl;
+        reverseList += to_string(currentNode->getValue());
+        reverseList += "\n";
+        ListNode* nextNode = currentNode->getNext();
+        currentNode = nextNode;
+        // this produces values in reverse order.
+    }
+    cout << reverseList << endl;
+    string forwardList;
+    for (int i = reverseList.length(); i >=0; i--) {
+        cout << "i = " << i << " " << reverseList[i] << endl;
+        forwardList += reverseList[i];
+    }
+    cout << forwardList; // prints "in order, but numbers reversed"
+
+    return length;
 }
 
 ListNode *List::search(int value) {
@@ -76,6 +107,5 @@ ListNode *List::search(int value) {
 
 void List::printList() {
     cout << "Here is your list:\n";
-    //for (int i = 0; i < getLength(); i++)
-    cout << head->getValue();
+    getLength();
 }
