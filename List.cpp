@@ -23,7 +23,8 @@ ListNode::ListNode(int val) : nextPtr(nullptr){
 }
 
 ListNode::~ListNode() {
-    cout << getValue() << "\t from ListNode has died";
+    if (getValue() != NULL)
+        cout << getValue() << "\t from ListNode has died\n";
 }
 
 int ListNode::getValue() const {
@@ -56,9 +57,14 @@ List::List() {
 }
 
 List::~List() {
-    cout << head->getValue() << " from List has died\n";
-    delete head;
-    //getLength();
+    ListNode* headToChop;
+    do {
+        headToChop = head;
+        head = headToChop->getNext();
+        headToChop->setNext(NULL);
+        delete headToChop;
+    } while (headToChop->getNext() != NULL);
+    delete headToChop;
 }
 
 void List::addNode(int value) {
@@ -77,35 +83,40 @@ void List::addNode(int value) {
 int List::getLength() {
     //cout << "-Inside List::getLength()-\n";
     int length = 0;
-    string reverseList = "";
     ListNode* currentNode = head;
-    //cout << "Current Node = " << currentNode << endl;
-    while (currentNode->getNext() != 0) {
-        length++;
-        //cout << "length at current node: " << length << endl;
-        //cout << "current node getValue() " << currentNode->getValue() << endl;
-        reverseList += to_string(currentNode->getValue());
-        reverseList += "\n";
+    while (currentNode->getNext() != NULL) {
         ListNode* nextNode = currentNode->getNext();
         currentNode = nextNode;
-        // this produces values in reverse order.
+        length++;
     }
-    cout << reverseList << endl;
-    string forwardList;
-    for (int i = reverseList.length(); i >=0; i--) {
-        cout << "i = " << i << " " << reverseList[i] << endl;
-        forwardList += reverseList[i];
-    }
-    cout << forwardList; // prints "in order, but numbers reversed"
-
     return length;
 }
 
 ListNode *List::search(int value) {
-    return head;
+    //cout << "-Inside List::search()-\n";
+    ListNode* searchNode = head;
+    while (searchNode->getValue() != value && searchNode->getNext() != NULL) {
+        ListNode* searchNodeNotValue = searchNode->getNext();
+        searchNode = searchNodeNotValue;
+    }
+    return searchNode->getNext();
 }
 
 void List::printList() {
+    int printIndex = getLength();
+    ListNode* lastNode = head;
+    int forwardList[getLength()-1];
     cout << "Here is your list:\n";
-    getLength();
+
+    while (lastNode->getNext() != NULL) {
+        forwardList[printIndex] = lastNode->getValue();
+        ListNode* previousNode = lastNode->getNext();
+        lastNode = previousNode;
+        printIndex--;
+    }
+
+    for (int i = 1; i < getLength() + 1; i++)
+        cout << forwardList[i] << endl;
+
+    cout << endl;
 }
