@@ -23,8 +23,10 @@ ListNode::ListNode(int val) : nextPtr(nullptr){
 }
 
 ListNode::~ListNode() {
-    if (getValue() != NULL)
+    if (getValue() != 0)
         cout << getValue() << "\t from ListNode has died\n";
+    //else
+    //    cout << "";
 }
 
 int ListNode::getValue() const {
@@ -42,7 +44,7 @@ ListNode *ListNode::getNext() {
     return nextPtr;
 }
 
-void ListNode::print() const {
+void ListNode::print() {
     //cout << "*Inside Node print()* ";
     if (this->value != 0)
         cout << value << endl;
@@ -52,32 +54,37 @@ List::List() {
     //cout << "-Inside List Constructor-\n";
     /* When a new list is created, there needs to
      * be a "Dummy" or "Blank" Node available. The
-     * head and tail will be 0 and NULL. */
-    head = new ListNode(0);
+     * head and tail will be NULL. */
+    head = new ListNode(NULL);
 }
 
 List::~List() {
     ListNode* headToChop;
-    do {
+    int length = getLength() + 1;
+    int deleted = 0;
+    for (int i = 0; i < length; i++) {
         headToChop = head;
         head = headToChop->getNext();
         headToChop->setNext(NULL);
         delete headToChop;
-    } while (headToChop->getNext() != NULL);
-    delete headToChop;
+        deleted++;
+    }
+    cout << "deleted " << deleted-1 << " list entries\n";
 }
 
 void List::addNode(int value) {
     //cout << "-Inside List::addNode()- ";
-    ListNode *oldNode = this->head;
-    //cout << "Old Node value: " << oldNode->getValue() << endl;
-    //cout << "Old Node nxtPtr " << oldNode->getNext() << endl;
+    //previous addNode was adding at the front.
+    //current addNode adds to the end
+    ListNode* newNode = new ListNode(value);
+    ListNode *last = head;  // make the "head" the last node
+    newNode->setNext(NULL); // new node will add to the last (will be in front)
+    if (head == NULL)   // If newNode is the first node of the list
+        head = newNode;
+    while (last->getNext()!=NULL)   // for subsequent nodes, iterate
+        last = last->getNext();     // to the "true" last node
 
-    auto* newNode = new ListNode(value);
-    newNode->setNext(head);
-    this->head = newNode;
-    //cout << "New Node value: " << newNode->getValue() << endl;
-    //cout << "New Node nxtPtr " << newNode->getNext() << endl << endl;
+    last->setNext(newNode); // new node is tacked on at the end
 }
 
 int List::getLength() {
@@ -86,6 +93,7 @@ int List::getLength() {
     ListNode* currentNode = head;
     while (currentNode->getNext() != NULL) {
         ListNode* nextNode = currentNode->getNext();
+        currentNode->setNext(nextNode);
         currentNode = nextNode;
         length++;
     }
@@ -103,20 +111,13 @@ ListNode *List::search(int value) {
 }
 
 void List::printList() {
-    int printIndex = getLength();
-    ListNode* lastNode = head;
-    int forwardList[getLength()-1];
-    cout << "Here is your list:\n";
-
-    while (lastNode->getNext() != NULL) {
-        forwardList[printIndex] = lastNode->getValue();
-        ListNode* previousNode = lastNode->getNext();
-        lastNode = previousNode;
-        printIndex--;
+    ListNode* currentNode = head;
+    while (currentNode->getNext() != NULL) {
+        ListNode* nextNode = currentNode->getNext();
+        currentNode->setNext(nextNode);
+        currentNode = nextNode;
+        cout << currentNode->getValue() << endl;
     }
 
-    for (int i = 1; i < getLength() + 1; i++)
-        cout << forwardList[i] << endl;
-
-    cout << endl;
+        cout << endl;
 }
